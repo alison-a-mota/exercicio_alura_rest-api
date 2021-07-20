@@ -2,6 +2,8 @@ package br.com.alura.forum.DTO;
 
 import br.com.alura.forum.models.Topico;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,7 +11,9 @@ import java.util.stream.Collectors;
 public class TopicoDTO {
 
     private Long id;
+    @NotEmpty @NotNull
     private String titulo;
+    @NotEmpty @NotNull
     private String mensagem;
     private LocalDateTime dataCriacao;
 
