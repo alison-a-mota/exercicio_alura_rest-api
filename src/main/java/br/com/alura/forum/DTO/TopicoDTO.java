@@ -1,32 +1,34 @@
 package br.com.alura.forum.DTO;
 
 import br.com.alura.forum.models.Topico;
+import org.springframework.data.domain.Page;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class TopicoDTO {
 
     private Long id;
-    @NotEmpty @NotNull
+    @NotEmpty
+    @NotNull
     private String titulo;
-    @NotEmpty @NotNull
+    @NotEmpty
+    @NotNull
     private String mensagem;
     private LocalDateTime dataCriacao;
 
-    public TopicoDTO(Topico topico){
+    public TopicoDTO(Topico topico) {
         this.id = topico.getId();
         this.titulo = topico.getTitulo();
         this.mensagem = topico.getMensagem();
         this.dataCriacao = topico.getDataCriacao();
     }
 
-    public static List<TopicoDTO> converter(List<Topico> topicos) {
-        return topicos.stream().map(TopicoDTO::new).collect(Collectors.toList());
+    public static Page<TopicoDTO> converter(Page<Topico> topicos) {
+        return topicos.map(TopicoDTO::new);
     }
+
 
     public Long getId() {
         return id;

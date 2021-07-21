@@ -8,6 +8,9 @@ import br.com.alura.forum.models.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,7 +19,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
-import java.util.List;
 
 @RestController
 @RequestMapping("/topicos")
@@ -28,14 +30,14 @@ public class TopicosController {
     private CursoRepository cursoRepository;
 
     @GetMapping
-    public List<TopicoDTO> lista(String nomeCurso) {
+    public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, Pageable paginacao) {
 
         if (nomeCurso == null) {
-            List<Topico> topicos = topicoRepository.findAll();
+            Page<Topico> topicos = topicoRepository.findAll(paginacao);
             return TopicoDTO.converter(topicos);
         }
         //?cursoNome=Spring+Boot
-        List<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso);
+        Page<Topico> topicos = topicoRepository.findByCursoNome(nomeCurso, paginacao);
         return TopicoDTO.converter(topicos);
     }
 
@@ -63,14 +65,14 @@ public class TopicosController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form){
+    public ResponseEntity<TopicoDTO> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
         Topico topico = form.atualizar(id, topicoRepository);
 
         return ResponseEntity.ok(new TopicoDTO(topico));
     }
 
-    @DeleteMapping ("/{id}")
-    public ResponseEntity<String> deletar(@PathVariable Long id){
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
         topicoRepository.deleteAllById(Collections.singleton(id));
         return ResponseEntity.ok().body("Tópico deletado.");
     }
