@@ -81,4 +81,9 @@ public class TopicosController {
         topicoRepository.deleteAllById(Collections.singleton(id));
         return ResponseEntity.ok().body("Tópico deletado.");
     }
+
+    //jdbc:h2:mem:alura-forum
+
 }
+
+

@@ -1,6 +1,5 @@
 package br.com.alura.forum.config.security;
 
-import br.com.alura.forum.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -9,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableWebSecurity
 @Configuration
@@ -20,7 +20,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     //Configurações de autenticação
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(autenticacaoService);
+        auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
 
     }
 
@@ -30,9 +30,9 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "topicos").permitAll()
                 .antMatchers(HttpMethod.GET, "topicos/*").permitAll()
+                .antMatchers(HttpMethod.POST, "usuarios").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin();
-
     }
 
     //Configurações de recursos staticos (js, css, imagens, etc)
@@ -40,4 +40,5 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
 
     }
+
 }
