@@ -32,7 +32,7 @@ public class TopicosController {
 
     @GetMapping
     @Cacheable("listaDeTopicos")
-    public Page<TopicoDTO> lista(@RequestParam(required = false) String nomeCurso, Pageable paginacao) {
+    public Page<TopicoDTO> listar(@RequestParam(required = false) String nomeCurso, Pageable paginacao) {
 
         if (nomeCurso == null) {
             Page<Topico> topicos = topicoRepository.findAll(paginacao);
