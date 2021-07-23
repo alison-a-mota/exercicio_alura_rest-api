@@ -4,6 +4,7 @@ import br.com.alura.forum.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @EnableWebSecurity
 @Configuration
+@Profile("prod")
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -41,14 +43,23 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     }
 
-
     //Configurações de autorização
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/topicos").permitAll()
                 .antMatchers(HttpMethod.GET, "/topicos/*").permitAll()
+                .antMatchers("/h2-console").permitAll()
+                .antMatchers("/h2-console/*").permitAll()
+                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/favicon.ico/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/h2-console/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/h2-console/*").permitAll()
+                .antMatchers(HttpMethod.PUT, "/h2-console/*").permitAll()
+                .antMatchers(HttpMethod.PATCH, "/h2-console/*").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/h2-console/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
                 .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/topicos/*").hasRole("MODERADOR")
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,7 +70,8 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
+                .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**")
+                .antMatchers("/h2-console", "/h2-console/*", "/favicon.ico", "/favicon.ico/**");
     }
 
 }
